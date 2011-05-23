@@ -54,7 +54,6 @@ public class DumpPlugin {
 
         final ByteArrayOutputStream sink = new ByteArrayOutputStream( );
         request.writeTo( sink );
-        log( Level.INFO, "Written " + sink.size( ) + " bytes." );
 
         final String dump = new String( Base64.encodeBase64Chunked( sink.toByteArray( ) ) );
         return CodeGeneratorResponse.newBuilder( )
