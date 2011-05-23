@@ -1,13 +1,13 @@
 package net.chwthewke.protobuf;
 
 import google.protobuf.compiler.Plugin.CodeGeneratorRequest;
+import google.protobuf.compiler.Plugin.CodeGeneratorResponse;
+import google.protobuf.compiler.Plugin.CodeGeneratorResponse.File;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
+import org.apache.commons.codec.binary.Base64;
 
 public class DumpPlugin {
     public static void main( final String[ ] args ) {
@@ -17,24 +17,32 @@ public class DumpPlugin {
     private void run( ) {
         try
         {
-            final CodeGeneratorRequest request = CodeGeneratorRequest.parseFrom( CodedInputStream.newInstance( System.in ) );
-            try
-            {
-                dump( request );
-            }
-            catch ( final IOException e )
-            {
-                log( Level.ERROR, "An exception occured while dumping the request: " + e.getMessage( ) );
-            }
+            final CodeGeneratorRequest request = CodeGeneratorRequest.parseFrom( System.in );
+            computeAndWriteResponse( request );
         }
         catch ( final IOException e )
         {
             log( Level.ERROR, "An exception occured while reading the request: " + e.getMessage( ) );
         }
 
+    }
+
+    private void computeAndWriteResponse( final CodeGeneratorRequest request ) {
         try
         {
-            CodeGeneratorRequest.getDefaultInstance( ).writeTo( CodedOutputStream.newInstance( System.out ) );
+            final CodeGeneratorResponse response = dump( request );
+            writeResponse( response );
+        }
+        catch ( final IOException e )
+        {
+            log( Level.ERROR, "An exception occured while dumping the request: " + e.getMessage( ) );
+        }
+    }
+
+    private void writeResponse( final CodeGeneratorResponse response ) {
+        try
+        {
+            response.writeTo( System.out );
         }
         catch ( final Exception e )
         {
@@ -42,17 +50,18 @@ public class DumpPlugin {
         }
     }
 
-    private void dump( final CodeGeneratorRequest request ) throws IOException {
-        final File outFile = new File( "dump.cgr" );
-        final FileOutputStream out = new FileOutputStream( outFile );
-        try
-        {
-            request.writeTo( CodedOutputStream.newInstance( out ) );
-        }
-        finally
-        {
-            out.close( );
-        }
+    private CodeGeneratorResponse dump( final CodeGeneratorRequest request ) throws IOException {
+
+        final ByteArrayOutputStream sink = new ByteArrayOutputStream( );
+        request.writeTo( sink );
+        log( Level.INFO, "Written " + sink.size( ) + " bytes." );
+
+        final String dump = new String( Base64.encodeBase64Chunked( sink.toByteArray( ) ) );
+        return CodeGeneratorResponse.newBuilder( )
+            .addFile( File.newBuilder( )
+                .setName( "dump.cgr" )
+                .setContent( dump ) )
+            .build( );
     }
 
     void log( final Level level, final String message ) {
