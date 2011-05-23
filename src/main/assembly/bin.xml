@@ -5,10 +5,12 @@
         <format>zip</format>
         <format>tar.gz</format>
     </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
         <fileSet>
             <directory>src/main/scripts</directory>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>
+            </outputDirectory>
             <filtered>true</filtered>
             <fileMode>0755</fileMode>
         </fileSet>
@@ -19,7 +21,8 @@
                 <exclude>*:pom:*</exclude>
             </excludes>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>
+            </outputDirectory>
             <scope>runtime</scope>
         </dependencySet>
     </dependencySets>
