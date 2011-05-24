@@ -19,7 +19,7 @@
             <plugin>
                 <groupId>net.chwthewke.maven.protobuf</groupId>
                 <artifactId>maven-protobuf-plugin</artifactId>
-                <version>0.1.1-SNAPSHOT</version>
+                <version>0.1.1</version>
                 <executions>
                     <execution>
                         <id>default-protoc</id>
