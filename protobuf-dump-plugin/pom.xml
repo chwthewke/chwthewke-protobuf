@@ -26,6 +26,11 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
+                        <configuration>
+                            <protoPaths>
+                                <protoPath>src/main/proto-dep</protoPath>
+                            </protoPaths>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
