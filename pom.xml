@@ -8,6 +8,10 @@
     <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <scm>
+        <connection>scm:hg:https://chwthewke-protobuf.googlecode.com/hg/</connection>
+    </scm>
+
     <modules>
         <module>protobuf-dump-plugin</module>
     </modules>
